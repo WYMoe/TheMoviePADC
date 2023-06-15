@@ -16,7 +16,7 @@ class ActorCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var imageViewActorProfile: UIImageView!
     @IBOutlet weak var labelKnowForDepartment: UILabel!
     @IBOutlet weak var labelActorName: UILabel!
-    var delegate : ActorActionDelegate? = nil
+     weak var delegate : ActorActionDelegate? = nil
 
     
 //    var data : ActorInfo? {

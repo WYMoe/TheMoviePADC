@@ -32,7 +32,7 @@ class BestActorTableViewCell: UITableViewCell, ActorActionDelegate {
         didSet{
             if actorList != nil {
                 collectionViewActors.reloadData()
-                print(actorList?.results)
+               
             }
         }
     }

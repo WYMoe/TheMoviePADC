@@ -49,14 +49,14 @@ struct LoginFailed : Codable {
 }
 
 struct MovieGenre : Codable {
-    let id:Int?
-    let name:String?
+    let id:Int
+    let name:String
     enum CodingKeys : String, CodingKey {
         case id
         case name
     }
     func convertToGenreVO()->GenreVO{
-        let vo = GenreVO(id: id!, name: name!, isSelected: false)
+        let vo = GenreVO(id: id, name: name, isSelected: false)
         return vo
     }
 }

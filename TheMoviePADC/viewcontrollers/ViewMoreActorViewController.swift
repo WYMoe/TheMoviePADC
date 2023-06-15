@@ -75,9 +75,13 @@ extension ViewMoreActorViewController:UICollectionViewDataSource,UICollectionVie
     
     private func fetchData(page:Int) {
         networkAgent.getPopularPeople(page: page) { actorList in
-            self.actorInfoList.append(contentsOf: actorList.results ?? [ActorInfo]())
-            self.collectionViewActors.reloadData()
-        } failure: { error in
+            switch actorList {
+            case .success(let actorList):
+                self.actorInfoList.append(contentsOf: actorList.results ?? [ActorInfo]())
+                self.collectionViewActors.reloadData()
+            case .failure(let message):
+                print(message)
+            }
             
         }
 

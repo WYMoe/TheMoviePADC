@@ -7,7 +7,7 @@
 
 import Foundation
 import UIKit
-class MovieDetailViewController : UIViewController, ActorActionDelegate , SimilarMovieDelegate {
+class SeriesDetailViewController : UIViewController, ActorActionDelegate , SimilarMovieDelegate {
    
     
     
@@ -47,7 +47,7 @@ class MovieDetailViewController : UIViewController, ActorActionDelegate , Simila
     private var creditList : CreditList?
     private var similarMovieList : MovieList?
     private var trailerList: [MovieTrailerInfo]?
-    var movieID : Int = -1
+    var seriesID : Int = -1
     var delegate: MovieItemDelegate?
     var similarMoviedelegate: SimilarMovieDelegate?
     
@@ -81,20 +81,19 @@ class MovieDetailViewController : UIViewController, ActorActionDelegate , Simila
         collectionViewSimilarMovie.register(UINib(nibName: String(describing: PopularFilmCollectionViewCell.self), bundle: nil), forCellWithReuseIdentifier: String(describing: PopularFilmCollectionViewCell.self))
         collectionViewSimilarMovie.showsHorizontalScrollIndicator = false
         collectionViewSimilarMovie.showsVerticalScrollIndicator = false
-       fetchMovieDetail(id: movieID)
-        fetchCreditList(id: movieID)
-        fetchSimilarMovie(id: movieID)
-      //  fetchMovieTrailers(id: movieID)
+        
+        fetchSeriesDetail(id: seriesID)
+       
        
     }
     
-    
-    func fetchMovieDetail(id:Int){
-        networkAgent.getMovieDetailById(id: id) { [weak self](data) in
+ 
+    func fetchSeriesDetail(id:Int){
+        networkAgent.getSeriesDetailById(id: id) { [weak self](data) in
             guard let self = self else {return}
             switch data {
-            case .success(let movieDetailById):
-                self.bindData(data: movieDetailById)
+            case .success(let seriesDetailById):
+                self.bindData(data: seriesDetailById)
             case .failure(let message):
                 print(message)
             }
@@ -105,58 +104,8 @@ class MovieDetailViewController : UIViewController, ActorActionDelegate , Simila
         
     }
     
-    
-    
 
-    func fetchCreditList(id:Int){
-        networkAgent.getCreditById(id: id) { [weak self](data) in
-            guard let self = self else {return}
-            
-            switch data {
-            case .success(let creditList):
-                self.creditList = creditList
-                self.collectionViewActors.reloadData()
-                self.collectionViewSimilarMovie.reloadData()
-            case .failure(let message):
-                print(message)
-            }
-         
-        }
-    }
-    
-    func fetchSimilarMovie(id:Int){
-        
-        networkAgent.getSimilarMovieById(id: id) { [weak self](data) in
-            guard let self = self else {return}
-            
-            switch data {
-            case .success(let similarMovieList):
-                self.similarMovieList = similarMovieList
-                self.collectionViewSimilarMovie.reloadData()
-            case .failure(let message):
-                print(message)
-            }
-            
-        }
-
-    }
-    
-    func fetchMovieTrailers(id:Int){
-        
-        networkAgent.getMovieTrailersById(id: id) { [weak self](data) in
-            guard let self = self else {return}
-            switch data {
-            case .success(let movieTrailerList):
-                self.trailerList = movieTrailerList.trailers
-            case .failure(let message):
-                print(message)
-            }
-          
-        }
-
-        
-
-    }
+  
     private func bindData(data: MovieDetail){
         productionCompanies = data.productionCompanies ?? [ProductionCompany]()
         collectionProductionCompanies.reloadData()
@@ -232,7 +181,7 @@ class MovieDetailViewController : UIViewController, ActorActionDelegate , Simila
 }
 
 
-extension MovieDetailViewController : UICollectionViewDataSource,UICollectionViewDelegateFlowLayout {
+extension SeriesDetailViewController : UICollectionViewDataSource,UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if collectionView == collectionProductionCompanies {
             return productionCompanies.count // todo

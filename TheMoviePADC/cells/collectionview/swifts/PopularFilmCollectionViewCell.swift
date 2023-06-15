@@ -9,6 +9,7 @@
 import UIKit
 
 class PopularFilmCollectionViewCell: UICollectionViewCell {
+ 
     @IBOutlet weak var imageViewBackdrop: UIImageView!
     @IBOutlet weak var labelContentTitle: UILabel!
     
@@ -16,7 +17,7 @@ class PopularFilmCollectionViewCell: UICollectionViewCell {
     
     @IBOutlet weak var ratingStar: RatingControl!
     
-    
+  
     var data : Result? {
         didSet{
             if let data = data {

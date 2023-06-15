@@ -29,7 +29,19 @@ extension UIViewController {
         vc.modalPresentationStyle = .fullScreen
         vc.movieID = movieId
         vc.modalTransitionStyle = .flipHorizontal
-        present(vc, animated: true)
+        
+        self.navigationController?.pushViewController(vc, animated: true)
+       // present(vc, animated: true)
+    }
+    func navigateToSeriesDetailViewController(seriesId:Int){
+       
+        guard  let vc  = UIStoryboard.mainStoryboard().instantiateViewController(identifier: SeriesDetailViewController.identifier) as? SeriesDetailViewController else {return}
+        vc.modalPresentationStyle = .fullScreen
+        vc.seriesID = seriesId
+        vc.modalTransitionStyle = .flipHorizontal
+        
+        self.navigationController?.pushViewController(vc, animated: true)
+       // present(vc, animated: true)
     }
     
     func navigateToViewMoreActorViewController(data : ActorList){
@@ -40,16 +52,15 @@ extension UIViewController {
 
             
     }
+    
+    func navigateToSimilarMovieViewController(movieId:Int){
+        print("ontap similar 3")
+        
+        guard  let vc  = storyboard?.instantiateViewController(withIdentifier: "MovieDetailViewController") as? MovieDetailViewController else {return}
+         vc.movieID = movieId
+        ///present(vc, animated: true, completion: nil)
+        self.navigationController?.pushViewController(vc, animated: true)
+    }
 }
 
 
-//extension UICollectionView{
-//    func navigateToViewMoreActorViewController(){
-//
-//        guard  let vc  = UIStoryboard.mainStoryboard().instantiateViewController(identifier: ViewMoreActorViewController.identifier) as? ViewMoreActorViewController else {return}
-//        vc.modalPresentationStyle = .fullScreen
-//
-//        vc.modalTransitionStyle = .flipHorizontal
-//        self.present(vc, animated: true)
-//    }
-//}
