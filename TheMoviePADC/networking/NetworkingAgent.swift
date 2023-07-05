@@ -183,7 +183,8 @@ struct MovieDBNetworkAgent: MovieDBNetworkAgentProtocol{
     
     
     
-    func getTopRatedMovieList(completion:@escaping(MDBResult<MovieList>)->Void){        AF.request(MDBEndpoint.topratedMovies(1))
+    func getTopRatedMovieList(completion:@escaping(MDBResult<MovieList>)->Void){
+        AF.request(MDBEndpoint.topratedMovies(1))
             .validate()
             .responseDecodable(of:MovieList.self) { response in
                 
@@ -306,10 +307,10 @@ struct MovieDBNetworkAgent: MovieDBNetworkAgentProtocol{
  -> \(respBody)
  
  Underlying Error
- -> \(error.underlyingError)
+ -> \(String(describing: error.underlyingError))
  
  Error Description
- -> \(error.errorDescription)
+ -> \(String(describing: error.errorDescription))
  
  """)
         return  serverErrorMessage ?? error.errorDescription ?? "undefined"

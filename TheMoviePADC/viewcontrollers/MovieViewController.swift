@@ -7,7 +7,8 @@
 
 import UIKit
 
-class MovieViewController: UIViewController,MovieItemDelegate,ViewMoreDelegate {
+class MovieViewController: UIViewController,MovieItemDelegate,ViewMoreDelegate,SeriesItemDelegate {
+   
     
     
     //MARK: - IBACtion
@@ -144,9 +145,9 @@ class MovieViewController: UIViewController,MovieItemDelegate,ViewMoreDelegate {
         self.navigateToMovieDetailViewController(movieId: id)
        
     }
-//    func ontapSerie(id: Int) {
-//        self.navigateToSeriesDetailViewController(seriesId: id)
-//    }
+    func ontapSerie(id: Int) {
+        self.navigateToSeriesDetailViewController(seriesId: id)
+    }
     
     func onTapMoreActor() {
         print("from viewcontroller")
@@ -203,7 +204,7 @@ extension MovieViewController : UITableViewDataSource {
             return cell
         case MovieType.SERIES_POPULAR.rawValue:
             let cell = tableView.dequeueCell(identifier: PopularFilmTableViewCell.identifier, indexPath: indexPath) as PopularFilmTableViewCell
-            cell.delegate = self
+            cell.seriesDelegate = self
             cell.labelTitle.text = "popular series".uppercased()
             cell.data = popularSeriesList
             return cell

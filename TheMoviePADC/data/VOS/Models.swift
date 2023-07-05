@@ -63,7 +63,7 @@ struct MovieGenre : Codable {
 
 
 struct MovieGenreList : Codable {
-    let genres : [MovieGenre]?
+    var genres : [MovieGenre]?
     enum CodingKeys : String, CodingKey {
         case genres
     }

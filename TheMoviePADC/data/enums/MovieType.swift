@@ -16,3 +16,12 @@ case MOVIE_GENRE = 4
 case MOVIE_SHOWCASE = 5
 case MOVIE_BEST_ACTOR = 6
 }
+
+enum MovieSerieGroupType : String, CaseIterable {
+    case upcomingMovies = "Upcoming Movies"
+    case popularMovies = "Popular Movies"
+    case topRatedMovies = "Top Rated Movies"
+    case pupularSeries = "Popular Series"
+    case upcomingSeries = "Upcoming Series"
+    case actorCredits = "Actor Credits"
+}

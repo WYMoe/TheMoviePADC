@@ -61,6 +61,14 @@ extension UIViewController {
         ///present(vc, animated: true, completion: nil)
         self.navigationController?.pushViewController(vc, animated: true)
     }
+    
+    func navigateToSimilarSeriesViewController(seriesId:Int){
+      
+        
+        guard  let vc  =  UIStoryboard.mainStoryboard().instantiateViewController(identifier: SeriesDetailViewController.identifier)  as? SeriesDetailViewController else {return}
+         vc.seriesID = seriesId
+        self.navigationController?.pushViewController(vc, animated: true)
+    }
 }
 
 

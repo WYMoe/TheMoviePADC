@@ -12,7 +12,7 @@ class PopularFilmTableViewCell: UITableViewCell {
     @IBOutlet weak var labelTitle: UILabel!
     @IBOutlet weak var collectionViewMovies: UICollectionView!
     var delegate: MovieItemDelegate? = nil
-    
+    var seriesDelegate : SeriesItemDelegate? = nil
     var data : MovieList? {
         didSet{
             if data != nil {
@@ -59,6 +59,7 @@ extension PopularFilmTableViewCell : UICollectionViewDataSource,UICollectionView
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
       delegate?.onTapMovie(id: data?.results?[indexPath.row].id ?? -1)
+      seriesDelegate?.ontapSerie(id: data?.results?[indexPath.row].id ?? -1)
     }
     
     

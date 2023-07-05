@@ -12,20 +12,21 @@
 //   let upcomingMovieList = try? JSONDecoder().decode(UpcomingMovieList.self, from: jsonData)
 
 import Foundation
+import CoreData
 
 // MARK: - UpcomingMovieList
 struct MovieList: Codable {
    
     
-    let dates: Dates?
-    let page: Int?
-    let results: [Result]?
-    let totalPages, totalResults: Int?
+    var dates: Dates?
+    var page: Int?
+    var results: [Result]?
+    var totalPages, totalResults: Int?
 
     enum CodingKeys: String, CodingKey {
-        case dates = "dates"
-        case page = "page"
-        case results = "results"
+        case dates
+        case page
+        case results 
         case totalPages = "total_pages"
         case totalResults = "total_results"
     }
@@ -45,7 +46,7 @@ struct Result: Codable,Hashable {
     let originalLanguage, originalTitle, overview: String?
     let originalName:String?
     let popularity: Double?
-    let posterPath, releaseDate, title: String?
+    let posterPath, releaseDate,firstAirDate, title: String?
     let video: Bool?
     let voteAverage: Double?
     let voteCount: Int?
@@ -62,9 +63,49 @@ struct Result: Codable,Hashable {
         case popularity = "popularity"
         case posterPath = "poster_path"
         case releaseDate = "release_date"
+        case firstAirDate = "first_air_date"
         case title = "title"
         case video = "video"
         case voteAverage = "vote_average"
         case voteCount = "vote_count"
+    }
+    
+    @discardableResult
+    func toMovieEntity(context : NSManagedObjectContext, groupType : BelongsToTypeEntity) -> MovieEntity{
+        
+        let entity = MovieEntity(context: context)
+        
+        
+        
+        
+        entity.id = Int32(id!)
+        entity.adult = adult ?? false
+        entity.backdropPath = backdropPath
+        entity.generalDs = genreIDS?.map({ id in
+            String(id)
+        }).joined(separator: ",")
+        entity.originalLanguage = originalLanguage
+        
+        entity.originalName = originalName
+        entity.originalTitle = originalTitle
+        
+        entity.overview = overview
+        
+        entity.popularity = popularity ?? 0
+        
+        entity.posterPath = posterPath
+        
+        entity.releaseDate = releaseDate ?? firstAirDate ?? ""
+        
+        entity.title = title
+        
+        entity.video = video ?? false
+     
+        entity.voteAverage = voteAverage ?? 0
+        entity.voteCount = Int64(voteCount ?? 0)
+        
+        entity.addToBelongsToType(groupType)
+        
+        return entity
     }
 }

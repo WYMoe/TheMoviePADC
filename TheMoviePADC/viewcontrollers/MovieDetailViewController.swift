@@ -48,7 +48,7 @@ class MovieDetailViewController : UIViewController, ActorActionDelegate , Simila
     private var similarMovieList : MovieList?
     private var trailerList: [MovieTrailerInfo]?
     var movieID : Int = -1
-    var delegate: MovieItemDelegate?
+  //  var delegate: MovieItemDelegate?
     var similarMoviedelegate: SimilarMovieDelegate?
     
     deinit {

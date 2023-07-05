@@ -7,8 +7,8 @@
 
 import Foundation
 import UIKit
-class SeriesDetailViewController : UIViewController, ActorActionDelegate , SimilarMovieDelegate {
-   
+class SeriesDetailViewController : UIViewController, ActorActionDelegate , SimilarSeriesDelegate {
+  
     
     
     @IBOutlet weak var btnRate: UIButton!
@@ -42,14 +42,13 @@ class SeriesDetailViewController : UIViewController, ActorActionDelegate , Simil
     
     
     
-    private let networkAgent = MovieDetailModelImpl.shared
+    private let networkAgent = SeriesDetailModelImpl.shared
     private var productionCompanies: [ProductionCompany] = [ ]
     private var creditList : CreditList?
-    private var similarMovieList : MovieList?
-    private var trailerList: [MovieTrailerInfo]?
+    private var similarSeriesList : MovieList?
+    //private var trailerList: [MovieTrailerInfo]?
     var seriesID : Int = -1
-    var delegate: MovieItemDelegate?
-    var similarMoviedelegate: SimilarMovieDelegate?
+    var similarSeriesdelegate: SimilarSeriesDelegate?
     
     deinit {
         print("released")
@@ -83,8 +82,10 @@ class SeriesDetailViewController : UIViewController, ActorActionDelegate , Simil
         collectionViewSimilarMovie.showsVerticalScrollIndicator = false
         
         fetchSeriesDetail(id: seriesID)
-       
-       
+        fetchSimilarSeries(id: seriesID)
+        fetchSeriesCreditList(id: seriesID)
+        print(seriesID)
+        
     }
     
  
@@ -103,6 +104,39 @@ class SeriesDetailViewController : UIViewController, ActorActionDelegate , Simil
 
         
     }
+    func fetchSeriesCreditList(id:Int){
+        networkAgent.getSeriesCreditById(id: id) { [weak self](data) in
+            guard let self = self else {return}
+            
+            switch data {
+            case .success(let creditList):
+                self.creditList = creditList
+                self.collectionViewActors.reloadData()
+                self.collectionViewSimilarMovie.reloadData()
+            case .failure(let message):
+                print(message)
+            }
+         
+        }
+    }
+    
+    func fetchSimilarSeries(id:Int){
+        
+        networkAgent.getSimilarSeriesById(id:id) { [weak self](data) in
+            guard let self = self else {return}
+            
+            switch data {
+            case .success(let similarMovieList):
+                self.similarSeriesList = similarMovieList
+                self.collectionViewSimilarMovie.reloadData()
+            case .failure(let message):
+                print(message)
+            }
+            
+        }
+
+    }
+    
     
 
   
@@ -131,7 +165,7 @@ class SeriesDetailViewController : UIViewController, ActorActionDelegate , Simil
         
         var genreListStr = ""
         data.genres?.forEach({ item in
-            genreListStr += "\(item.name ?? ""), "
+            genreListStr += "\(item.name ), "
         })
         genreListStr.removeLast()
         genreListStr.removeLast()
@@ -165,10 +199,11 @@ class SeriesDetailViewController : UIViewController, ActorActionDelegate , Simil
         self.dismiss(animated: true,completion: nil)
     }
     
-    func onTapSimilarMovie(id: Int) {
-        
-        self.navigateToSimilarMovieViewController(movieId: id)
+    func onTapSimilarSeries(id: Int) {
+        self.navigateToSimilarSeriesViewController(seriesId: id)
     }
+    
+   
     
  
     func onTapFavourite(isFavourite: Bool) {
@@ -191,7 +226,7 @@ extension SeriesDetailViewController : UICollectionViewDataSource,UICollectionVi
 
             return creditList?.cast?.count ?? 0
         }else if collectionView == collectionViewSimilarMovie{
-            return similarMovieList?.results?.count ?? 0
+            return similarSeriesList?.results?.count ?? 0
         }
       return  5
     }
@@ -219,7 +254,7 @@ extension SeriesDetailViewController : UICollectionViewDataSource,UICollectionVi
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: String(describing: PopularFilmCollectionViewCell.self), for: indexPath) as? PopularFilmCollectionViewCell else { return UICollectionViewCell() }
            
             
-            cell.data = self.similarMovieList?.results?[indexPath.row]
+            cell.data = self.similarSeriesList?.results?[indexPath.row]
           
             return cell
 
@@ -253,8 +288,8 @@ extension SeriesDetailViewController : UICollectionViewDataSource,UICollectionVi
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if collectionView == collectionViewSimilarMovie {
 
-            self.similarMoviedelegate = self
-            self.similarMoviedelegate?.onTapSimilarMovie(id: similarMovieList?.results?[indexPath.row].id ?? -1)
+            self.similarSeriesdelegate = self
+            self.similarSeriesdelegate?.onTapSimilarSeries(id: similarSeriesList?.results?[indexPath.row].id ?? -1)
           
             
           
