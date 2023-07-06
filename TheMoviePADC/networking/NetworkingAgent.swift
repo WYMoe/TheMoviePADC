@@ -183,8 +183,7 @@ struct MovieDBNetworkAgent: MovieDBNetworkAgentProtocol{
     
     
     
-    func getTopRatedMovieList(completion:@escaping(MDBResult<MovieList>)->Void){
-        AF.request(MDBEndpoint.topratedMovies(1))
+    func getTopRatedMovieList(completion:@escaping(MDBResult<MovieList>)->Void){        AF.request(MDBEndpoint.topratedMovies(1))
             .validate()
             .responseDecodable(of:MovieList.self) { response in
                 

@@ -30,6 +30,7 @@ class MovieModelImpl : BaseModel, MovieModel{
     private let contentTypeRepository : ContentTypeRepository = ContentTypeRepositoryImpl.shared
     private let genreRepository : GenreRepository = GenreRepositoryImpl.shared
     
+    var totalPageActorList : Int? = 1
     
     // movie showcase
     func getTopRatedMovieList(completion:@escaping(MDBResult<MovieList>)->Void){
@@ -46,7 +47,7 @@ class MovieModelImpl : BaseModel, MovieModel{
             }
 
             self.contentTypeRepository.getMoviesOrSeries(type: .topRatedMovies, completion:{ movieList in
-                print(movieList.results ?? [Result]())
+               
                 completion(.success(movieList))
             })
 
@@ -69,7 +70,7 @@ class MovieModelImpl : BaseModel, MovieModel{
             }
             
             self.contentTypeRepository.getMoviesOrSeries(type: .popularMovies, completion:{ movieList in
-                print(movieList.results ?? [Result]())
+            
                 completion(.success(movieList))
             })
 
@@ -91,7 +92,7 @@ class MovieModelImpl : BaseModel, MovieModel{
             }
             
             self.contentTypeRepository.getMoviesOrSeries(type: .upcomingMovies, completion:{ movieList in
-                print(movieList.results ?? [Result]())
+              
                 completion(.success(movieList))
             })
 
@@ -119,7 +120,22 @@ class MovieModelImpl : BaseModel, MovieModel{
         
         
     func getPopularPeople ( page:Int?, completion:@escaping(MDBResult<ActorList>)->Void){
-            networkAgent.getPopularPeople(page: page, completion: completion)
+           // networkAgent.getPopularPeople(page: page, completion: completion)
+        
+        networkAgent.getPopularPeople(page: page) { result in
+            switch result {
+            case .success(let actorList):
+                self.movieRepository.savePopularActorList(list: actorList)
+                self.totalPageActorList = actorList.totalPages ?? 1
+            case .failure(let error):
+                print("\(#function) \(error)")
+            }
+
+            self.movieRepository.getPopularActorList(page: page ?? 1) { actorList in
+                completion(.success(actorList))
+            }
+        }
+        
         }
     
     
@@ -132,13 +148,13 @@ class MovieModelImpl : BaseModel, MovieModel{
                 switch result {
                 case .success(let data):
                     self.movieRepository.saveList(type: .pupularSeries, data: data)
+                    self.totalPageActorList = data.totalPages ?? 1
                 case .failure(let error):
                     print("\(#function) \(error)")
                     
                 }
                 
                 self.contentTypeRepository.getMoviesOrSeries(type: .pupularSeries, completion:{ movieList in
-                    print(movieList.results ?? [Result]())
                     completion(.success(movieList))
                 })
               

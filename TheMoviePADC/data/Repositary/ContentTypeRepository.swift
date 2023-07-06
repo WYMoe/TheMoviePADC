@@ -89,7 +89,7 @@ class ContentTypeRepositoryImpl : BaseRepository, ContentTypeRepository {
             
             if dataSource.isEmpty {
                 MovieSerieGroupType.allCases.forEach {
-                    save(name : $0.rawValue)
+                  let _ =  save(name : $0.rawValue)
                 }
                 
             } else {

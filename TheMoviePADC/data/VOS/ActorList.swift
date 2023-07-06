@@ -6,14 +6,14 @@
 //
 
 import Foundation
-
+import CoreData
 
 
 // MARK: - ActorList
 struct ActorList: Codable {
-    let page: Int?
-    let results: [ActorInfo]?
-    let totalPages, totalResults: Int?
+    var page: Int?
+    var results: [ActorInfo]?
+    var totalPages, totalResults: Int?
 
     enum CodingKeys: String, CodingKey {
         case page, results
@@ -26,7 +26,7 @@ struct ActorList: Codable {
 struct ActorInfo: Codable {
     let adult: Bool?
     let gender, id: Int?
-    let knownFor: [KnownFor]?
+   // let knownFor: [KnownFor]?
     let knownForDepartment: String?
     let name: String?
     let popularity: Double?
@@ -34,10 +34,33 @@ struct ActorInfo: Codable {
 
     enum CodingKeys: String, CodingKey {
         case adult, gender, id
-        case knownFor = "known_for"
+        //case knownFor = "known_for"
         case knownForDepartment = "known_for_department"
         case name, popularity
         case profilePath = "profile_path"
+    }
+    
+    @discardableResult
+    func toActorEntity(context : NSManagedObjectContext,contentTypeRepo : ContentTypeRepository) -> ActorEntity{
+        
+        let entity = ActorEntity(context: context)
+        
+        entity.adult = adult ?? true
+        entity.gender = Int32(gender!)
+        entity.id = Int32(id!)
+        entity.knownForDepartment = knownForDepartment
+        entity.name = name
+        
+        entity.popularity = Double(popularity!)
+        entity.profilePath = profilePath
+       
+
+        
+        
+        
+     
+        
+        return entity
     }
 }
 

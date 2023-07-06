@@ -78,7 +78,8 @@
         <relationship name="casts" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="ActorEntity" inverseName="credits" inverseEntity="ActorEntity"/>
         <relationship name="genres" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="GenreEntity" inverseName="movies" inverseEntity="GenreEntity"/>
         <relationship name="productionCompanies" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="ProductionCompanyEntity" inverseName="movies" inverseEntity="ProductionCompanyEntity"/>
-        <relationship name="productionCountries" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="MovieEntity" inverseName="productionCountries" inverseEntity="MovieEntity"/>
+        <relationship name="productionCountries" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="ProductionCountryEntity" inverseName="movies" inverseEntity="ProductionCountryEntity"/>
+        <relationship name="similarMovies" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="MovieEntity" inverseName="similarMovies" inverseEntity="MovieEntity"/>
         <relationship name="spokenLanguage" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="SpokenLanguageEntity" inverseName="movies" inverseEntity="SpokenLanguageEntity"/>
         <uniquenessConstraints>
             <uniquenessConstraint>
@@ -101,7 +102,7 @@
     <entity name="ProductionCountryEntity" representedClassName="ProductionCountryEntity" syncable="YES" codeGenerationType="class">
         <attribute name="iso3166_1" optional="YES" attributeType="String"/>
         <attribute name="name" optional="YES" attributeType="String"/>
-        <relationship name="movies" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="MovieEntity"/>
+        <relationship name="movies" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="MovieEntity" inverseName="productionCountries" inverseEntity="MovieEntity"/>
         <uniquenessConstraints>
             <uniquenessConstraint>
                 <constraint value="name"/>
