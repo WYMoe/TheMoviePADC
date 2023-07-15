@@ -7,14 +7,20 @@
 
 import Foundation
 import CoreData
+import RealmSwift
 
 class BaseRepository: NSObject {
     
     override init() {
         super.init()
+        print("Default Realm is at : \( realmDB.realm.configuration.fileURL?.absoluteString ?? "undefined" )")
     }
     
     var coreData = CoreDataStack.shared
+    
+    var realmDB = RealmDB.shared
+    
+    
     
     public func handleDataError(anError:Error?) -> String {
         if let anError = anError,(anError as NSError).domain == "NSCocoaErrorDomain" {

@@ -32,7 +32,78 @@ class MovieModelImpl : BaseModel, MovieModel{
     
     var totalPageActorList : Int? = 1
     
-    // movie showcase
+    
+    
+    
+    func getUpcomingMovieList(completion:@escaping(MDBResult<MovieList>)->Void){
+       // networkAgent.getUpcomingMovieList(completion: completion)
+        
+        networkAgent.getUpcomingMovieList{ (result) in
+            switch result {
+            case .success(let data):
+                self.movieRepository.saveList(type: .upcomingMovies, data: data)
+            case .failure(let error):
+                print("\(#function) \(error)")
+
+            }
+
+            self.contentTypeRepository.getMoviesOrSeries(type: .upcomingMovies, completion:{ movieList in
+
+                completion(.success(movieList))
+            })
+
+
+        }
+        
+        
+        
+    }
+    
+    func getPopularMovieList(completion:@escaping(MDBResult<MovieList>)->Void){
+       // networkAgent.getPopularMovieList(completion: completion)
+        
+        networkAgent.getPopularMovieList{ (result) in
+            switch result {
+            case .success(let data):
+                self.movieRepository.saveList(type: .popularMovies, data: data)
+            case .failure(let error):
+                print("\(#function) \(error)")
+
+            }
+            
+            self.contentTypeRepository.getMoviesOrSeries(type: .popularMovies, completion:{ movieList in
+            
+                completion(.success(movieList))
+            })
+
+
+        }
+    }
+    
+    
+    func getPopularSeriesList(completion:@escaping(MDBResult<MovieList>)->Void){
+           // networkAgent.getPopularSeriesList(completion: completion)
+            
+            networkAgent.getPopularSeriesList{ (result) in
+                switch result {
+                case .success(let data):
+                    self.movieRepository.saveList(type: .pupularSeries, data: data)
+                    self.totalPageActorList = data.totalPages ?? 1
+                case .failure(let error):
+                    print("\(#function) \(error)")
+                    
+                }
+                
+                self.contentTypeRepository.getMoviesOrSeries(type: .pupularSeries, completion:{ movieList in
+                    completion(.success(movieList))
+                })
+              
+                
+            }
+        }
+    
+        
+         // movie showcase
     func getTopRatedMovieList(completion:@escaping(MDBResult<MovieList>)->Void){
         //networkAgent.getTopRatedMovieList(completion: completion)
         
@@ -57,49 +128,9 @@ class MovieModelImpl : BaseModel, MovieModel{
     }
     
     
-    func getPopularMovieList(completion:@escaping(MDBResult<MovieList>)->Void){
-       // networkAgent.getPopularMovieList(completion: completion)
-        
-        networkAgent.getPopularMovieList{ (result) in
-            switch result {
-            case .success(let data):
-                self.movieRepository.saveList(type: .popularMovies, data: data)
-            case .failure(let error):
-                print("\(#function) \(error)")
-
-            }
-            
-            self.contentTypeRepository.getMoviesOrSeries(type: .popularMovies, completion:{ movieList in
-            
-                completion(.success(movieList))
-            })
-
-
-        }
-    }
+   
     
-    
-    func getUpcomingMovieList(completion:@escaping(MDBResult<MovieList>)->Void){
-       // networkAgent.getUpcomingMovieList(completion: completion)
-        
-        networkAgent.getUpcomingMovieList{ (result) in
-            switch result {
-            case .success(let data):
-                self.movieRepository.saveList(type: .upcomingMovies, data: data)
-            case .failure(let error):
-                print("\(#function) \(error)")
-
-            }
-            
-            self.contentTypeRepository.getMoviesOrSeries(type: .upcomingMovies, completion:{ movieList in
-              
-                completion(.success(movieList))
-            })
-
-
-        }
-    }
-    
+  
 
     func getGenreList(completion:@escaping(MDBResult<MovieGenreList>)->Void){
            //networkAgent.getGenreList(completion: completion)
@@ -111,7 +142,7 @@ class MovieModelImpl : BaseModel, MovieModel{
             case .failure(let error):
                 print("\(#function) \(error)")
             }
-            // to ask 
+          
             self.genreRepository.get(completion : {
                 movieGenreList in completion(.success(movieGenreList)) })
 
@@ -141,27 +172,7 @@ class MovieModelImpl : BaseModel, MovieModel{
     
     
         
-    func getPopularSeriesList(completion:@escaping(MDBResult<MovieList>)->Void){
-           // networkAgent.getPopularSeriesList(completion: completion)
-            
-            networkAgent.getPopularSeriesList{ (result) in
-                switch result {
-                case .success(let data):
-                    self.movieRepository.saveList(type: .pupularSeries, data: data)
-                    self.totalPageActorList = data.totalPages ?? 1
-                case .failure(let error):
-                    print("\(#function) \(error)")
-                    
-                }
-                
-                self.contentTypeRepository.getMoviesOrSeries(type: .pupularSeries, completion:{ movieList in
-                    completion(.success(movieList))
-                })
-              
-                
-            }
-        }
-        
+   
     
     
 }

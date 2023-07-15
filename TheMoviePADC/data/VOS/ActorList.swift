@@ -26,7 +26,7 @@ struct ActorList: Codable {
 struct ActorInfo: Codable {
     let adult: Bool?
     let gender, id: Int?
-   // let knownFor: [KnownFor]?
+    //let knownFor: [KnownFor]?
     let knownForDepartment: String?
     let name: String?
     let popularity: Double?
@@ -53,7 +53,7 @@ struct ActorInfo: Codable {
         
         entity.popularity = Double(popularity!)
         entity.profilePath = profilePath
-       
+        
 
         
         
