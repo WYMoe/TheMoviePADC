@@ -1,0 +1,6 @@
+framework module Pods_TheMoviePADC {
+  umbrella header "Pods-TheMoviePADC-umbrella.h"
+
+  export *
+  module * { export * }
+}
