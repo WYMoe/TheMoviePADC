@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import RxSwift
 
 
 protocol MovieModel{
@@ -79,6 +80,11 @@ class MovieModelImpl : BaseModel, MovieModel{
 
         }
     }
+    
+    //RxAlmofire
+  
+    
+    let disposeBag = DisposeBag()
     
     
     func getPopularSeriesList(completion:@escaping(MDBResult<MovieList>)->Void){

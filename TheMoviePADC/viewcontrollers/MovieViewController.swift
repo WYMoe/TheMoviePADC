@@ -6,6 +6,9 @@
 //
 
 import UIKit
+import RxSwift
+import RxCocoa
+import RxDataSources
 
 class MovieViewController: UIViewController,MovieItemDelegate,ViewMoreDelegate,SeriesItemDelegate {
    
@@ -18,7 +21,11 @@ class MovieViewController: UIViewController,MovieItemDelegate,ViewMoreDelegate,S
     
     //MARK: - IBOutlet
     @IBOutlet weak var tableViewMovies: UITableView!
-    
+    private var refreshControl : UIRefreshControl = {
+        let ui = UIRefreshControl()
+        ui.tintColor = UIColor(named: "AccentColor")
+        return ui
+    }()
     
     
     //MARK: - Properties
@@ -30,20 +37,82 @@ class MovieViewController: UIViewController,MovieItemDelegate,ViewMoreDelegate,S
     private var popularPeopleList : ActorList?
     private let movieModel:MovieModel  = MovieModelImpl.shared
     
+    
+    let observableUpcomingMovies = RxMovieModelImpl.shared.getUpcomingMovieList()
+    let observablePopularMovies = RxMovieModelImpl.shared.getPopularMovieList()
+    let observableActorList = RxMovieModelImpl.shared.getPopularPeopleList()
     //MARK: - View Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        tableViewMovies.dataSource = self
+       
         registerTableViewCells()
-        fetchUpcomingMovieList()
-        fetchPopularMovieList()
-        fetcPopularSeriesList()
-        fetchMovieGenreList()
-        fetchTopRatedMovieList()
-        fetchPopularPeopleList()
+        fetchData()
+        refreshControl .addTarget(self, action: #selector(handlePullToRefresh), for: .valueChanged)
+        refreshControl.tintColor = UIColor.yellow
+        let dataSource = initDatSource()
+        Observable.combineLatest(observablePopularMovies,observableUpcomingMovies, observableActorList)
+            .flatMap { (popularMovies,upcomingMovies, actorList) -> Observable<[HomeMovieSectionModel]> in
+                    .just(
+                        [
+                        HomeMovieSectionModel.movieResult(
+                                items: [.upcomingMoviesSection(items: upcomingMovies)]),
+                            
+                        HomeMovieSectionModel.movieResult(
+                            items: [ .popularMoviesSection(items: popularMovies)]),
+                        
+                        HomeMovieSectionModel.actorResult(
+                            items: [ .bestActorSection(items: actorList)]),
+                        
+                        
+                     
+                    
+                    ]
+                    
+                )
+            }
+            .bind(to: tableViewMovies.rx.items(dataSource: dataSource))
+            .disposed(by: disposeBag)
+    }
+    private func initDatSource() -> RxTableViewSectionedReloadDataSource<HomeMovieSectionModel> {
+        RxTableViewSectionedReloadDataSource<HomeMovieSectionModel>.init { (datasource, tableView, indexPath, item) -> UITableViewCell in
+            switch item {
+            case .popularMoviesSection(let items):
+                let cell = tableView.dequeueCell(identifier: PopularFilmTableViewCell.identifier, indexPath: indexPath) as PopularFilmTableViewCell
+                cell.delegate = self
+                cell.labelTitle.text = "popular movies".uppercased()
+                cell.data = items
+                return cell
+            case .upcomingMoviesSection(let items):
+                let cell = tableView.dequeueCell(identifier: MovieSliderTableViewCell.identifier, indexPath: indexPath) as MovieSliderTableViewCell
+                cell.delegate = self
+              
+                cell.data = items
+                return cell
+                
+            case .bestActorSection(let items):
+                let cell = tableView.dequeueCell(identifier: BestActorTableViewCell.identifier, indexPath: indexPath) as BestActorTableViewCell
+                cell.delegate = self
+               
+                cell.actorList = items
+                return cell
+            default:
+                return UITableViewCell()
+            }
+        }
+    }
+    @objc func handlePullToRefresh() {
+        fetchData()
     }
     
-    
+    func fetchData() {
+//        fetchUpcomingMovieList()
+//        fetchPopularMovieList()
+//        fetcPopularSeriesList()
+//        fetchMovieGenreList()
+//        fetchTopRatedMovieList()
+//        fetchPopularPeopleList()
+
+    }
     //MARK: - API Methods
     func fetchUpcomingMovieList(){
         movieModel.getUpcomingMovieList { [weak self](data) in
@@ -62,19 +131,50 @@ class MovieViewController: UIViewController,MovieItemDelegate,ViewMoreDelegate,S
 
     }
     
+    let disposeBag = DisposeBag()
+    
     func fetchPopularMovieList(){
-        movieModel.getPopularMovieList { [weak self](data) in
-            guard let self = self else {return}
-            switch data {
-            case .success(let popularMovieList):
-                self.popularMovieList = popularMovieList
-                self.tableViewMovies.reloadSections(IndexSet(integer: MovieType.MOVIE_POPULAR.rawValue), with: .automatic)
-            case .failure(let message):
-                print(message)
-                
+        //rx
+//        MovieModelImpl.shared.getPopularMovieList()
+//            .subscribe(
+//                onNext: { data in
+//                self.popularMovieList = data
+//                self.tableViewMovies.reloadSections(IndexSet(integer: MovieType.MOVIE_POPULAR.rawValue), with: .automatic)
+//            },onError: { error in
+//                print(error)
+//            }).disposed(by: disposeBag)
+        //normal
+//        movieModel.getPopularMovieList { [weak self](data) in
+//            guard let self = self else {return}
+//            switch data {
+//            case .success(let popularMovieList):
+//                self.popularMovieList = popularMovieList
+//                self.tableViewMovies.reloadSections(IndexSet(integer: MovieType.MOVIE_POPULAR.rawValue), with: .automatic)
+//            case .failure(let message):
+//                print(message)
+//
+//            }
+//
+//        }
+        
+        //rx
+     
+        
+        observablePopularMovies
+            .map { movieList in
+               [movieList]
             }
+            .bind(to: tableViewMovies.rx.items(
+                cellIdentifier: PopularFilmTableViewCell.identifier,
+                cellType: PopularFilmTableViewCell.self
+            )){
+                row, element, cell in
+                cell.labelTitle.text = "popular movies".uppercased()
+                cell.delegate = self
+                cell.data = element
+            }
+            .disposed(by: disposeBag)
             
-        }
 
     }
     
@@ -158,6 +258,17 @@ class MovieViewController: UIViewController,MovieItemDelegate,ViewMoreDelegate,S
     
     //MARK: - Register table view cells
     private func registerTableViewCells(){
+        
+        //tableViewMovies.dataSource = self
+        tableViewMovies.refreshControl = refreshControl
+        refreshControl.rx.controlEvent(.valueChanged)
+            .subscribe(onNext: {
+                self.fetchData()
+                self.refreshControl.endRefreshing()
+            })
+            .disposed(by: disposeBag)
+        
+        
         tableViewMovies.registerForCell(identifier: MovieSliderTableViewCell.identifier)
         tableViewMovies.registerForCell(identifier: PopularFilmTableViewCell.identifier)
         
@@ -190,12 +301,12 @@ extension MovieViewController : UITableViewDataSource {
         
         switch indexPath.section {
         case MovieType.MOVIE_SLIDER.rawValue:
+            
             let cell = tableView.dequeueCell(identifier: MovieSliderTableViewCell.identifier, indexPath: indexPath) as MovieSliderTableViewCell
             cell.delegate = self
           
             cell.data = upcomingMovieList
             return cell
-            
         case MovieType.MOVIE_POPULAR.rawValue:
             let cell = tableView.dequeueCell(identifier: PopularFilmTableViewCell.identifier, indexPath: indexPath) as PopularFilmTableViewCell
             cell.delegate = self

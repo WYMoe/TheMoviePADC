@@ -8,7 +8,6 @@
 import Foundation
 import RealmSwift
 
-
 class ActorObject : Object {
     
     @Persisted

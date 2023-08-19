@@ -10,6 +10,9 @@ target 'TheMoviePADC' do
   pod 'SDWebImage', '~> 5.0'
   pod 'Wormholy', :configurations => ['Debug']
   pod 'RealmSwift', '~>10'
-  
-  
+  pod 'RxSwift'
+  pod 'RxCocoa'
+  pod 'RxAlamofire'
+  pod 'RxRealm'
+  pod 'RxDataSources'
 end

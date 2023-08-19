@@ -8,6 +8,8 @@
 import Foundation
 import CoreData
 import RealmSwift
+import RxSwift
+import RxCocoa
 
 protocol MovieRepository {
     
@@ -20,6 +22,7 @@ protocol MovieRepository {
     func getCasts(id: Int, completion: @escaping (CreditList) -> Void)
     func savePopularActorList(list:ActorList) ->Void
     func getPopularActorList(page: Int, completion: @escaping (ActorList) -> Void)
+    func getPopularActorListwithRx() -> Observable<ActorList>
 }
 
 
@@ -398,6 +401,26 @@ class MovieRepositoryImpl : BaseRepository, MovieRepository {
         
         
 
+    }
+    
+    //rx
+    func getPopularActorListwithRx() -> Observable<ActorList> {
+        let results : Results<ActorObject> = realmDB.realm.objects(ActorObject.self)
+            
+            .sorted(byKeyPath: "popularity", ascending: false)
+            .sorted(byKeyPath: "name", ascending:  true)
+        
+        return Observable.collection(from: results)
+              .map { actorObjects in
+                  var actorList = ActorList()
+                  actorList.results = actorObjects.map({ obj in
+                      obj.toActorInfo()
+                  })
+                  return actorList
+              }
+            
+            
+            
     }
         
 }
