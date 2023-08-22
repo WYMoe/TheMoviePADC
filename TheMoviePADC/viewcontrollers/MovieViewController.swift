@@ -47,9 +47,10 @@ class MovieViewController: UIViewController,MovieItemDelegate,ViewMoreDelegate,S
        
         registerTableViewCells()
         fetchData()
-        refreshControl .addTarget(self, action: #selector(handlePullToRefresh), for: .valueChanged)
+        refreshControl.addTarget(self, action: #selector(handlePullToRefresh), for: .valueChanged)
         refreshControl.tintColor = UIColor.yellow
         let dataSource = initDatSource()
+        
         Observable.combineLatest(observablePopularMovies,observableUpcomingMovies, observableActorList)
             .flatMap { (popularMovies,upcomingMovies, actorList) -> Observable<[HomeMovieSectionModel]> in
                     .just(
@@ -252,7 +253,7 @@ class MovieViewController: UIViewController,MovieItemDelegate,ViewMoreDelegate,S
     func onTapMoreActor() {
         print("from viewcontroller")
       
-        self.navigateToViewMoreActorViewController(data: popularPeopleList!)
+        self.navigateToViewMoreActorViewController(data: popularPeopleList ?? ActorList())
     }
     
     
