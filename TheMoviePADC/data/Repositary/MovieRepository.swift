@@ -35,7 +35,14 @@ class MovieRepositoryImpl : BaseRepository, MovieRepository {
     }
     
     
+ 
     
+    private var contentTypeMap = [String: BelongsToTypeEntity]()
+    private var contentTypeMapObj = [String: BelongsToTypeObject]()
+    let contentTypeRepo : ContentTypeRepository = ContentTypeRepositoryImpl.shared
+    var pageSize: Int = 100
+    
+    //save movies
     func saveList(type: MovieSerieGroupType, data: MovieList) {
         
         ///Core Data
@@ -83,17 +90,15 @@ class MovieRepositoryImpl : BaseRepository, MovieRepository {
         
     }
     
-    private var contentTypeMap = [String: BelongsToTypeEntity]()
-    private var contentTypeMapObj = [String: BelongsToTypeObject]()
-    let contentTypeRepo : ContentTypeRepository = ContentTypeRepositoryImpl.shared
-    var pageSize: Int = 100
-    
-    
-    
+    //save detail
     func saveDetail(data: MovieDetail) {
+        
+        //core data
 //        let _ = data.toMovieEntity(context: coreData.context)
 //        coreData.saveContext()
         
+        
+        //realm
         let object = MovieObject()
         
         object.id = data.id ?? 0
@@ -161,8 +166,10 @@ class MovieRepositoryImpl : BaseRepository, MovieRepository {
       
     }
     
-    
+    //get detail
     func getDetail(id: Int, completion: @escaping (MovieDetail?) -> Void) {
+        
+        //core data
 //        let fetchRequest : NSFetchRequest<MovieEntity> = MovieEntity.fetchRequest()
 //        fetchRequest.predicate = NSPredicate(format: "%K = %@", "id","\(id)")
 //        fetchRequest.sortDescriptors = [
@@ -175,6 +182,8 @@ class MovieRepositoryImpl : BaseRepository, MovieRepository {
 //            completion(nil)
 //        }
         
+        
+        //realm
         let result:Results<MovieObject> = realmDB.realm.objects(MovieObject.self)
             .filter("%K = %@", "id",id)
             .sorted(byKeyPath: "popularity",ascending: false)
@@ -192,8 +201,10 @@ class MovieRepositoryImpl : BaseRepository, MovieRepository {
     
     
   
-    
+    //save similar content
     func saveSimilarContent(id: Int, data: MovieList) {
+        
+        //core data
 //        let fetchRequest : NSFetchRequest<MovieEntity> = MovieEntity.fetchRequest()
 //        fetchRequest.predicate = NSPredicate(format: "%K = %@", "id","\(id)")
 //        fetchRequest.sortDescriptors = [
@@ -213,7 +224,7 @@ class MovieRepositoryImpl : BaseRepository, MovieRepository {
 //        }
 //        coreData.saveContext()
         
-        
+        //realm
         let movieObj = realmDB.realm.object(ofType: MovieObject.self, forPrimaryKey: id)
       
         try! realmDB.realm.write({
@@ -258,7 +269,9 @@ class MovieRepositoryImpl : BaseRepository, MovieRepository {
         
     }
     
+    //get similar content
     func getSimilarContent(id: Int, completion: @escaping (MovieList) -> Void) {
+        //core data
 //        let fetchRequest : NSFetchRequest<MovieEntity> = MovieEntity.fetchRequest()
 //        fetchRequest.predicate = NSPredicate(format: "%K = %@", "id","\(id)")
 //        fetchRequest.sortDescriptors = [
@@ -275,6 +288,8 @@ class MovieRepositoryImpl : BaseRepository, MovieRepository {
 //            completion(movieList)
 //        }
         
+        
+        //realm
         let results:Results<MovieObject> = realmDB.realm.objects(MovieObject.self)
             .filter("%K = %@", "id",id)
             .sorted(byKeyPath: "popularity",ascending: false)
@@ -290,7 +305,9 @@ class MovieRepositoryImpl : BaseRepository, MovieRepository {
         
     }
     
+    //save cast
     func saveCasts(id: Int, data: CreditList) {
+        //core data
         let fetchRequest : NSFetchRequest<MovieEntity> = MovieEntity.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "%K = %@", "id","\(id)")
         fetchRequest.sortDescriptors = [
@@ -316,7 +333,10 @@ class MovieRepositoryImpl : BaseRepository, MovieRepository {
 
     }
     
+    //get cast
     func getCasts(id: Int, completion: @escaping (CreditList) -> Void) {
+        
+        //core data
         let fetchRequest : NSFetchRequest<MovieEntity> = MovieEntity.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "%K = %@", "id","\(id)")
         fetchRequest.sortDescriptors = [
@@ -335,13 +355,18 @@ class MovieRepositoryImpl : BaseRepository, MovieRepository {
         }
     }
     
+    //save popular people
     func savePopularActorList(list: ActorList) {
+        
+        //core data
 //        list.results?.forEach({ actorInfo in
 //            actorInfo.toActorEntity(context: coreData.context, contentTypeRepo: contentTypeRepo)
 //        })
 //
 //        coreData.saveContext()
       
+        
+        //realm
         list.results?.forEach({ actorInfo in
             let object = ActorObject()
             
@@ -360,8 +385,10 @@ class MovieRepositoryImpl : BaseRepository, MovieRepository {
         })
     }
     
-    
+    //get popular people
     func getPopularActorList(page: Int, completion: @escaping (ActorList) -> Void) {
+        
+        //core data
 //        let fetchRequest : NSFetchRequest<ActorEntity> = ActorEntity.fetchRequest()
 //
 //        fetchRequest.sortDescriptors = [
@@ -386,6 +413,8 @@ class MovieRepositoryImpl : BaseRepository, MovieRepository {
 //            print("\(#function) \(error.localizedDescription)")
 //            completion(ActorList())
 //        }
+        
+        //realm
         let results : Results<ActorObject> = realmDB.realm.objects(ActorObject.self)
             .sorted(byKeyPath: "popularity", ascending: false)
             .sorted(byKeyPath: "name", ascending:  true)
@@ -403,7 +432,7 @@ class MovieRepositoryImpl : BaseRepository, MovieRepository {
 
     }
     
-    //rx
+    //get poular people with RxRealm
     func getPopularActorListwithRx() -> Observable<ActorList> {
         let results : Results<ActorObject> = realmDB.realm.objects(ActorObject.self)
             
@@ -422,5 +451,6 @@ class MovieRepositoryImpl : BaseRepository, MovieRepository {
             
             
     }
+  
         
 }

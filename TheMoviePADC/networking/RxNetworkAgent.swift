@@ -17,10 +17,9 @@ enum MDBEror : Error {
 class RxNetworkAgent {
     static let shared = RxNetworkAgent()
    
-    
+    //popular movie
     func getPopularMovieList() -> Observable<MovieList> {
         
-//        let url =  " \(AppConstants.baseURL)/3/movie/popular?language=en-US&page=1&api_key=3c1df4e11dda694c743d0bfd1ab8d"
         
         return RxAlamofire
             .requestDecodable(.get,MDBEndpoint.popularMovie(1))
@@ -28,7 +27,7 @@ class RxNetworkAgent {
                 Observable.just(item.1)
             }
         
-// behind the secene
+// without RxAlamofire
 //        return Observable.create { observer in
 //            AF.request(MDBEndpoint.popularMovie(1))
 //                .responseDecodable(of: MovieList.self) { response in
@@ -55,6 +54,7 @@ class RxNetworkAgent {
             }
     }
     
+    //upcoming movie
     func getUpcomingMovieList() -> Observable<MovieList> {
         
         
@@ -65,6 +65,19 @@ class RxNetworkAgent {
             }
     }
     
+    //popular series
+    func getPopularSeriesList() -> Observable<MovieList> {
+        
+        
+        return RxAlamofire
+            .requestDecodable(.get,MDBEndpoint.popularTVSeries)
+            .flatMap { item -> Observable<MovieList> in
+                Observable.just(item.1)
+            }
+    }
+    
+    
+    //popular people
     func getPopularPeopleList() -> Observable<ActorList> {
         return RxAlamofire
             .requestDecodable(.get,MDBEndpoint.popularActors(1))
@@ -73,6 +86,16 @@ class RxNetworkAgent {
             }
     }
     
+    //genre
+    
+    func getGenreList() -> Observable<MovieGenreList> {
+        return RxAlamofire
+            .requestDecodable(.get,MDBEndpoint.movieGenres)
+            .flatMap { item -> Observable<MovieGenreList> in
+                Observable.just(item.1)
+            }
+    }
+    //search movie
     func searchMovie(page : Int, query : String) -> Observable<MovieList> {
         
        return Observable.create { observer in

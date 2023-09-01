@@ -13,11 +13,15 @@ protocol RxMovieModel {
     func getPopularMovieList() -> Observable<MovieList>
     func getUpcomingMovieList() -> Observable<MovieList>
     func getPopularPeopleList() -> Observable<ActorList>
-//    func getGenreList() -> Observable<MovieGenreList>
-//    func getPopularSeriesList() -> Observable<MovieList>
+    func getGenreList() -> Observable<MovieGenreList>
+    func getPopularSeriesList() -> Observable<MovieList>
 }
 
 class RxMovieModelImpl : BaseModel, RxMovieModel {
+    
+  
+  
+    
     
     
     static let shared : RxMovieModel = RxMovieModelImpl()
@@ -32,7 +36,7 @@ class RxMovieModelImpl : BaseModel, RxMovieModel {
     let disposebag = DisposeBag()
     
     
-    
+ 
     
     func getTopRatedMovieList(page: Int) -> Observable<MovieList> {
         /**
@@ -93,6 +97,27 @@ class RxMovieModelImpl : BaseModel, RxMovieModel {
 //            }
     }
     
+    func getPopularSeriesList() -> Observable<MovieList> {
+        
+        /**
+         show from db first
+         make network request
+         - success -> update db -> notify/push -> update UI
+         - fail -> xxx
+         */
+        let observableRemoteMovieList = RxNetworkAgent.shared.getPopularSeriesList()
+        observableRemoteMovieList
+            .subscribe(onNext: {
+                data in
+                self.movieRepository.saveList(type: .pupularSeries, data: data)
+            })
+            .disposed(by: disposebag)
+        
+        let observableLocalMovieList = ContentTypeRepositoryImpl.shared.getwithRx(type: .pupularSeries)
+        return observableLocalMovieList
+        
+    }
+    
     func getUpcomingMovieList() -> Observable<MovieList> {
         /**
          show from db first
@@ -134,4 +159,26 @@ class RxMovieModelImpl : BaseModel, RxMovieModel {
         let observableLocalMovieList = MovieRepositoryImpl.shared.getPopularActorListwithRx()
         return observableLocalMovieList
     }
+    
+    
+    func getGenreList() -> RxSwift.Observable<MovieGenreList> {
+        /**
+         show from db first
+         make network request
+         - success -> update db -> notify/push -> update UI
+         - fail -> xxx
+         */
+        
+        let observableRemoteMovieList = RxNetworkAgent.shared.getGenreList()
+        observableRemoteMovieList
+            .subscribe(onNext: {
+                data in
+                self.genreRepository.save(data: data)
+            })
+            .disposed(by: disposebag)
+        
+        let observableLocalMovieList = GenreRepositoryImpl.shared.getGenreListWithRx()
+        return observableLocalMovieList
+    }
+    
 }
