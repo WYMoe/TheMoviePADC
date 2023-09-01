@@ -11,7 +11,7 @@ import Alamofire
 enum MDBEndpoint : URLConvertible {
    
     
-case searchMovie(_ page : String, _ query : String)
+case searchMovie(_ page : Int, _ query : String)
 case actorTVCredits(_ id: Int)
 case actorImages (_ id : Int)
 case actorDetail(_ id : Int)
@@ -32,6 +32,7 @@ case popularMovie(_ page : Int)
     
     private var apiPath : String {
         switch self {
+     
         case .upcomingMovie(let page):
         return "/movie/upcoming?page=\(page)"
         case .popularMovie (let page):
@@ -79,7 +80,7 @@ case popularMovie(_ page : Int)
         urlComponents?.queryItems?.append(contentsOf: [URLQueryItem(name: "api_key", value: AppConstants.apiKey)])
         return (urlComponents?.url)!
     }
-    
+
     func asURL() throws -> URL {
         return url
     }

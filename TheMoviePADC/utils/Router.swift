@@ -23,6 +23,16 @@ extension UIStoryboard {
 }
 
 extension UIViewController {
+    
+    func navigateToSearchView(){
+       
+        guard  let vc  = UIStoryboard.mainStoryboard().instantiateViewController(identifier: SearchViewController.identifier) as? SearchViewController else {return}
+        vc.modalPresentationStyle = .fullScreen
+        vc.modalTransitionStyle = .flipHorizontal
+        
+        self.navigationController?.pushViewController(vc, animated: true)
+       // present(vc, animated: true)
+    }
     func navigateToMovieDetailViewController(movieId:Int){
        
         guard  let vc  = UIStoryboard.mainStoryboard().instantiateViewController(identifier: MovieDetailViewController.identifier) as? MovieDetailViewController else {return}

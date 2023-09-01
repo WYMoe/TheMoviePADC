@@ -73,4 +73,21 @@ class RxNetworkAgent {
             }
     }
     
+    func searchMovie(page : Int, query : String) -> Observable<MovieList> {
+        
+       return Observable.create { observer in
+           AF.request(MDBEndpoint.searchMovie(page,query))
+                        .responseDecodable(of: MovieList.self) { response in
+                            switch response.result {
+                            case .success(let data):
+                                observer.onNext(data)
+                               
+                            case .failure(let error):
+                                observer.onError(error)
+                            }
+                        }
+                    return Disposables.create()
+                }
+    }
+    
 }

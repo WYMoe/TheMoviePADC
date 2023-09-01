@@ -2,7 +2,7 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="21701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21678"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21679"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -22,7 +22,9 @@
                         <subviews>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="movie" translatesAutoresizingMaskIntoConstraints="NO" id="88Q-6B-nTf">
                                 <rect key="frame" x="0.0" y="0.0" width="120" height="160"/>
+                                <accessibility key="accessibilityConfiguration" identifier="PopularFilmCollectionViewCell"/>
                                 <constraints>
+                                    <constraint firstAttribute="width" constant="120" id="EeB-zA-LId"/>
                                     <constraint firstAttribute="height" constant="160" id="fC7-fF-d3L"/>
                                 </constraints>
                             </imageView>
@@ -73,7 +75,7 @@
                 <outlet property="labelRating" destination="b17-Cn-Hwe" id="Dfm-TL-kHZ"/>
                 <outlet property="ratingStar" destination="IXO-18-6ti" id="6aH-CY-OdE"/>
             </connections>
-            <point key="canvasLocation" x="124.42748091603053" y="-33.802816901408455"/>
+            <point key="canvasLocation" x="123.66412213740458" y="-33.802816901408455"/>
         </collectionViewCell>
     </objects>
     <resources>

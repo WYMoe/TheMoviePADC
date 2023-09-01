@@ -16,7 +16,9 @@ class MovieViewController: UIViewController,MovieItemDelegate,ViewMoreDelegate,S
     
     //MARK: - IBACtion
     @IBAction func btnSearch(_ sender: Any) {
-        print("searched tapped")
+//      		
+        
+        navigateToSearchView()
     }
     
     //MARK: - IBOutlet
