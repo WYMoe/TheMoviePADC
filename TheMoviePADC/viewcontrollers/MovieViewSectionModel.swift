@@ -11,9 +11,9 @@ import RxDataSources
 enum SectionItem {
     case upcomingMoviesSection(items : MovieList)
     case popularMoviesSection(items: MovieList)
-    case popularSeriesSection(items: [Result])
+    case popularSeriesSection(items: MovieList)
     case movieShowTimeSection
-    case movieGenreSection(items: [MovieGenre])
+    case movieGenreSection(items: [MovieGenre], data : MovieList)
     case showcaseMoviesSection(items: MovieList)
     case bestActorSection(items: ActorList)
 }

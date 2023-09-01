@@ -44,11 +44,23 @@ class RxNetworkAgent {
     }
     
     
+    //popular series
+    func getPopularSeriesList() -> Observable<MovieList> {
+        
+        
+        return RxAlamofire
+            .requestDecodable(.get,MDBEndpoint.popularTVSeries)
+            .flatMap { item -> Observable<MovieList> in
+                Observable.just(item.1)
+            }
+    }
+    
+    
     func getTopRatedMovieList(page : Int) -> Observable<MovieList> {
         
         
         return RxAlamofire
-            .requestDecodable(.get,MDBEndpoint.topratedMovies(page))
+            .requestDecodable(.get,MDBEndpoint.topratedMovies(1))
             .flatMap { item -> Observable<MovieList> in
                 Observable.just(item.1)
             }
@@ -64,18 +76,7 @@ class RxNetworkAgent {
                 Observable.just(item.1)
             }
     }
-    
-    //popular series
-    func getPopularSeriesList() -> Observable<MovieList> {
-        
-        
-        return RxAlamofire
-            .requestDecodable(.get,MDBEndpoint.popularTVSeries)
-            .flatMap { item -> Observable<MovieList> in
-                Observable.just(item.1)
-            }
-    }
-    
+ 
     
     //popular people
     func getPopularPeopleList() -> Observable<ActorList> {

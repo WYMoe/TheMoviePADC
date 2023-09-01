@@ -42,7 +42,9 @@ class MovieDetailViewController : UIViewController, ActorActionDelegate , Simila
     
     
     
-    private let networkAgent = MovieDetailModelImpl.shared
+    private let networkAgent = MovieDBNetworkAgent.shared
+    private let movieModel = MovieDetailModelImpl.shared
+    private let seriesModel = SeriesDetailModelImpl.shared
     private var productionCompanies: [ProductionCompany] = [ ]
     private var creditList : CreditList?
     private var similarMovieList : MovieList?
@@ -90,17 +92,33 @@ class MovieDetailViewController : UIViewController, ActorActionDelegate , Simila
     
     
     func fetchMovieDetail(id:Int){
-        networkAgent.getMovieDetailById(id: id) { [weak self](data) in
+//        networkAgent.getMovieDetailById(id: id) { [weak self](data) in
+//            guard let self = self else {return}
+//            switch data {
+//            case .success(let movieDetailById):
+//                self.bindData(data: movieDetailById)
+//            case .failure(let message):
+//                print(message)
+//            }
+//
+//
+//        }
+        
+        
+        movieModel.getMovieDetailById(id: id) { [weak self](data) in
             guard let self = self else {return}
             switch data {
             case .success(let movieDetailById):
+                
                 self.bindData(data: movieDetailById)
             case .failure(let message):
                 print(message)
             }
-      
-           
+
+
         }
+        
+        
 
         
     }

@@ -38,15 +38,17 @@ class ContentTypeRepositoryImpl : BaseRepository, ContentTypeRepository {
     }
     
     
-    
+    //core data
     func getBelongsToTypeEntity(type: MovieSerieGroupType) -> BelongsToTypeEntity {
-        //core data
+        
         if let entity = contentTypeMap[type.rawValue] {
             return entity
         }
         return save(name: type.rawValue)
     }
     
+    
+    //realm
     func getBelongsToTypeObject(type: MovieSerieGroupType) -> BelongsToTypeObject {
         if let object = contentTypeMapObj[type.rawValue]{
             return object
@@ -159,7 +161,7 @@ class ContentTypeRepositoryImpl : BaseRepository, ContentTypeRepository {
     }
     
    
-    
+    //core data
     func save(name: String) -> BelongsToTypeEntity {
         //core data
         let entity = BelongsToTypeEntity(context: coreData.context)
@@ -171,7 +173,7 @@ class ContentTypeRepositoryImpl : BaseRepository, ContentTypeRepository {
         return entity
     }
    
-    
+    //realm
     func saveObj(name: String) -> BelongsToTypeObject {
         let object = BelongsToTypeObject()
         
@@ -179,7 +181,7 @@ class ContentTypeRepositoryImpl : BaseRepository, ContentTypeRepository {
         
         contentTypeMapObj[name] = object
         try! realmDB.realm.write({
-            realmDB.realm.add(object, update: .modified)
+            realmDB.realm.add(object, update: .all)
         })
         return object
     }

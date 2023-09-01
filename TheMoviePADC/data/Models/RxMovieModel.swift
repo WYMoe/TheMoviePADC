@@ -50,11 +50,11 @@ class RxMovieModelImpl : BaseModel, RxMovieModel {
         observableRemoteMovieList
             .subscribe(onNext: {
                 data in
-                self.movieRepository.saveList(type: .popularMovies, data: data)
+                self.movieRepository.saveList(type: .topRatedMovies, data: data)
             })
             .disposed(by: disposebag)
         
-        let observableLocalMovieList = ContentTypeRepositoryImpl.shared.getwithRx(type: .popularMovies)
+        let observableLocalMovieList = ContentTypeRepositoryImpl.shared.getwithRx(type: .topRatedMovies)
         return observableLocalMovieList
         
     }
@@ -130,11 +130,11 @@ class RxMovieModelImpl : BaseModel, RxMovieModel {
         observableRemoteMovieList
             .subscribe(onNext: {
                 data in
-                self.movieRepository.saveList(type: .popularMovies, data: data)
+                self.movieRepository.saveList(type: .upcomingMovies, data: data)
             })
             .disposed(by: disposebag)
         
-        let observableLocalMovieList = ContentTypeRepositoryImpl.shared.getwithRx(type: .popularMovies)
+        let observableLocalMovieList = ContentTypeRepositoryImpl.shared.getwithRx(type: .upcomingMovies)
         return observableLocalMovieList
         
     }

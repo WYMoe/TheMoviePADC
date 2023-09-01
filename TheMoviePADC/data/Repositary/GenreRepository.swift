@@ -53,7 +53,8 @@ class GenreRepositoryImpl : BaseRepository,GenreRepository {
             object.name = movieGenre.name
             
             try! realmDB.realm.write({
-                realmDB.realm.add(object, update: .modified)
+                realmDB.realm.add(object, update: .all
+                )
             })
         })
     }
@@ -72,7 +73,7 @@ class GenreRepositoryImpl : BaseRepository,GenreRepository {
 //                GenreEntity.toMovieGenre(entity: entity)
 //            }
 //
-//            var movieGenreList : MovieGenreList = MovieGenreList()
+//            var movieGenreList  : MovieGenreList = MovieGenreList()
 //            movieGenreList.genres = items
 //
 //            completion(movieGenreList)

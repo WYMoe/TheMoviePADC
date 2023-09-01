@@ -29,32 +29,34 @@ class MovieViewModel {
     }
     
     private func initObserver() {
-        Observable.combineLatest(observableActorList,observableGenreList,observablePopularMovies,observablePopularSeries,observableUpcomingMovies,observableTopRatedMovies)
+        Observable.combineLatest(observableUpcomingMovies,observablePopularMovies,observablePopularSeries,observableGenreList, observableTopRatedMovies, observableActorList )
             .throttle(.seconds(1), scheduler: MainScheduler.instance)
             .subscribe{ (
-                actorList,
-                genreList,
+                
+                upcomingMovies,
                 popularMovies,
                 popularSeries,
-                upcomingMovies,
-                topRatedMovies
+                genreList,
+                topRatedMovies,
+                actorList
+               
                 
                 
               
             ) in
                 var items = [HomeMovieSectionModel] ()
                 
-                
-                if !actorList.isEmpty {
-                    var actorDataList = ActorList()
-                    actorDataList.results = actorList
-                    items.append(HomeMovieSectionModel.actorResult(items: [.bestActorSection(items: actorDataList)]))
+                if !upcomingMovies.isEmpty {
+                    
+                    
+                    var upcomingMovieList = MovieList()
+                    upcomingMovieList.results = upcomingMovies
+                    items.append(HomeMovieSectionModel.movieResult(items: [.upcomingMoviesSection(items: upcomingMovieList)]))
                 }
                 
                 
-                if !genreList.isEmpty {
-                    items.append(HomeMovieSectionModel.genreResult(items: [.movieGenreSection(items: genreList)]))
-                }
+                items.append(HomeMovieSectionModel.movieResult(items: [.movieShowTimeSection]))
+                
                 
                 if !popularMovies.isEmpty {
                     var popularMovieList = MovieList()
@@ -65,14 +67,21 @@ class MovieViewModel {
                 if !popularSeries.isEmpty {
                     var popularSeriesList = MovieList()
                     popularSeriesList.results = popularSeries
-                    items.append(HomeMovieSectionModel.movieResult(items: [.popularSeriesSection(items: popularSeries)]))
+                    items.append(HomeMovieSectionModel.movieResult(items: [.popularSeriesSection(items: popularSeriesList)]))
                 }
                 
-                if !upcomingMovies.isEmpty {
-                    var upcomingMovieList = MovieList()
-                    upcomingMovieList.results = upcomingMovies
-                    items.append(HomeMovieSectionModel.movieResult(items: [.upcomingMoviesSection(items: upcomingMovieList)]))
+                if !genreList.isEmpty {
+                    var allMovies : [Result] = []
+                    allMovies.append( contentsOf: popularMovies)
+                    allMovies.append( contentsOf: popularSeries)
+                    allMovies.append( contentsOf: topRatedMovies)
+                    allMovies.append( contentsOf: upcomingMovies)
+                    var allMoviesList : MovieList = MovieList()
+                    allMoviesList.results = allMovies
+                    items.append(HomeMovieSectionModel.genreResult(items: [.movieGenreSection(items: genreList, data: allMoviesList)]))
                 }
+                
+                
                 
                 if !topRatedMovies.isEmpty {
                     var topRatedMovieList = MovieList()
@@ -80,6 +89,16 @@ class MovieViewModel {
                     items.append(HomeMovieSectionModel.movieResult(items: [.showcaseMoviesSection(items: topRatedMovieList)]))
                 }
                 
+                if !actorList.isEmpty {
+                    var actorDataList = ActorList()
+                    actorDataList.results = actorList
+                    items.append(HomeMovieSectionModel.actorResult(items: [.bestActorSection(items: actorDataList)]))
+                }
+                
+                
+               
+                
+               
                 self.homeItemList.accept(items)
                 
             }.disposed(by: disposeBag)

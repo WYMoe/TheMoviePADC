@@ -58,8 +58,14 @@ extension PopularFilmTableViewCell : UICollectionViewDataSource,UICollectionView
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-      delegate?.onTapMovie(id: data?.results?[indexPath.row].id ?? -1)
-      seriesDelegate?.ontapSerie(id: data?.results?[indexPath.row].id ?? -1)
+        //if movie is series, go to series detail screen
+        if (data?.results?[indexPath.row].firstAirDate == nil){
+            delegate?.onTapMovie(id: data?.results?[indexPath.row].id ?? -1)
+        } else {
+            
+            seriesDelegate?.ontapSerie(id: data?.results?[indexPath.row].id ?? -1)
+        }
+      
     }
     
     

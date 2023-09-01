@@ -82,7 +82,7 @@ class MovieRepositoryImpl : BaseRepository, MovieRepository {
            
             
                 try! self.realmDB.realm.write{
-                    self.realmDB.realm.add(object,update: .modified)
+                    self.realmDB.realm.add(object,update: .all)
                 }
            
         })
@@ -157,9 +157,11 @@ class MovieRepositoryImpl : BaseRepository, MovieRepository {
             object.spokenLanguages.append(languageObj)
         })
         
-        try! realmDB.realm.write({
-            realmDB.realm.add(object, update: .modified)
-        })
+        do { try realmDB.realm.write({
+            realmDB.realm.add(object, update: .all)
+        }) } catch {
+            print(error)
+        }
         
         
         
@@ -380,7 +382,7 @@ class MovieRepositoryImpl : BaseRepository, MovieRepository {
             object.profilePath = actorInfo.profilePath
             
             try! realmDB.realm.write({
-                realmDB.realm.add(object, update: .modified)
+                realmDB.realm.add(object, update: .all)
             })
         })
     }
